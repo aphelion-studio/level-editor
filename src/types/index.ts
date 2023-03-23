@@ -26,3 +26,5 @@ export type Level = {
   planets: Planet[]
   suns: Sun[]
 }
+
+export type Selection = 'Planet' | 'Sun' | null

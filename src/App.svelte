@@ -1,8 +1,12 @@
 <script lang="ts">
+  import ListSelect from './lib/ListSelect.svelte'
   import sample from './sample.json'
-  import type { Level } from './types'
+  import type { Level, Selection } from './types'
 
   let level = sample as Level
+
+  let selectedType: Selection = null
+  let selectedIndex: number = 0
 
   let svg: SVGSVGElement
   $: viewBox = svg
@@ -11,12 +15,19 @@
 </script>
 
 <main>
-  <div class="sidebar" id="left">
+  <div id="left">
     <h1>Level Editor</h1>
-    <h2>Planets</h2>
-    {#each level.planets as _, index}
-      <button on:click={() => console.log(index)}>Planet {index}</button>
-    {/each}
+    <div id="entity-select">
+      <h2>Planets</h2>
+      <ListSelect
+        listElements={level.planets}
+        listType="Planet"
+        bind:selectedType
+        bind:selectedIndex
+      />
+      <h2>Suns</h2>
+      <ListSelect listElements={level.suns} listType="Sun" bind:selectedType bind:selectedIndex />
+    </div>
   </div>
   <svg {viewBox} bind:this={svg}>
     {#each level.planets as planet}
@@ -62,15 +73,21 @@
     background: #141414;
   }
   h1 {
-    margin: 0;
+    margin: 1rem;
   }
-  .sidebar {
-    padding: 1rem;
-    min-width: fit-content;
+  h2 {
+    margin: 0.5rem 0 0;
   }
   #left {
     display: flex;
     flex-direction: column;
     min-width: 250px;
+  }
+  #entity-select {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    padding: 0rem 1rem 1rem;
   }
 </style>
