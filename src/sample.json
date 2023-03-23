@@ -2,7 +2,7 @@
   "planets": [
     {
       "owner": 0,
-      "radius": 5,
+      "radius": 40,
       "moons": 3,
       "spawndelay": 0.5,
       "orbit": {
@@ -10,26 +10,47 @@
         "y": 0,
         "a": 400,
         "b": 200,
-        "speed": 5,
+        "speed": 0.1,
         "direction": "clockwise",
         "t": 0
       }
     },
     {
       "owner": 1,
-      "radius": 5,
-      "moons": 3,
+      "radius": 20,
+      "moons": 5,
       "spawndelay": 0.5,
       "orbit": {
         "x": 0,
         "y": 0,
         "a": 150,
         "b": 150,
-        "speed": 5,
+        "speed": 0.05,
+        "direction": "clockwise",
+        "t": 0
+      }
+    },
+    {
+      "owner": -1,
+      "radius": 20,
+      "moons": 0,
+      "spawndelay": 0.5,
+      "orbit": {
+        "x": 200,
+        "y": 100,
+        "a": 100,
+        "b": 100,
+        "speed": 0.2,
         "direction": "clockwise",
         "t": 0
       }
     }
   ],
-  "suns": []
+  "suns": [
+    {
+      "x": 0,
+      "y": 0,
+      "radius": 70
+    }
+  ]
 }
