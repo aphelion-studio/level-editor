@@ -1,0 +1,35 @@
+{
+  "planets": [
+    {
+      "owner": 0,
+      "radius": 5,
+      "moons": 3,
+      "spawndelay": 0.5,
+      "orbit": {
+        "x": 0,
+        "y": 0,
+        "a": 400,
+        "b": 200,
+        "speed": 5,
+        "direction": "clockwise",
+        "t": 0
+      }
+    },
+    {
+      "owner": 1,
+      "radius": 5,
+      "moons": 3,
+      "spawndelay": 0.5,
+      "orbit": {
+        "x": 0,
+        "y": 0,
+        "a": 150,
+        "b": 150,
+        "speed": 5,
+        "direction": "clockwise",
+        "t": 0
+      }
+    }
+  ],
+  "suns": []
+}

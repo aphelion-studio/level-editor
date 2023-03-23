@@ -1,47 +1,58 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  import sample from './sample.json'
+  import type { Level } from './types'
+
+  let level = sample as Level
+
+  let svg: SVGSVGElement
+  $: viewBox = svg
+    ? `${-svg.clientWidth / 2} ${-svg.clientHeight / 2} ${svg.clientWidth} ${svg.clientHeight}`
+    : '0 0 100 100'
 </script>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+  <div class="sidebar" id="left">
+    <h1>Level Editor</h1>
+    <h2>Planets</h2>
+    {#each level.planets as _, index}
+      <button on:click={() => console.log(index)}>Planet {index}</button>
+    {/each}
   </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer"
-      >SvelteKit</a
-    >, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">Click on the Vite and Svelte logos to learn more</p>
+  <svg {viewBox} bind:this={svg}>
+    {#each level.planets as planet}
+      <ellipse
+        cx={planet.orbit.x}
+        cy={planet.orbit.y}
+        rx={planet.orbit.a}
+        ry={planet.orbit.b}
+        fill="none"
+        stroke="white"
+      />
+    {/each}
+  </svg>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  main {
+    height: 100%;
+    width: 100%;
+    display: flex;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+  svg {
+    width: 100%;
+    height: 100%;
+    background: #141414;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+  h1 {
+    margin: 0;
   }
-  .read-the-docs {
-    color: #888;
+  .sidebar {
+    padding: 1rem;
+    min-width: fit-content;
+  }
+  #left {
+    display: flex;
+    flex-direction: column;
+    min-width: 250px;
   }
 </style>
