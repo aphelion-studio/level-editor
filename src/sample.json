@@ -1,7 +1,7 @@
 {
   "planets": [
     {
-      "owner": 0,
+      "owner": 1,
       "radius": 40,
       "moons": 3,
       "spawndelay": 0.5,
@@ -16,7 +16,7 @@
       }
     },
     {
-      "owner": 1,
+      "owner": 0,
       "radius": 20,
       "moons": 5,
       "spawndelay": 0.5,

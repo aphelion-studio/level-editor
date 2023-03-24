@@ -12,6 +12,17 @@
   $: viewBox = svg
     ? `${-svg.clientWidth / 2} ${-svg.clientHeight / 2} ${svg.clientWidth} ${svg.clientHeight}`
     : '0 0 100 100'
+
+  const playerColor = (player: number) => {
+    switch (player) {
+      case 0:
+        return 'blue'
+      case 1:
+        return 'red'
+      default:
+        return 'lime'
+    }
+  }
 </script>
 
 <main>
@@ -59,7 +70,7 @@
         cx={planet.orbit.x - planet.orbit.a}
         cy={-planet.orbit.y}
         r={planet.radius}
-        fill="red"
+        fill={playerColor(planet.owner)}
       />
     {/each}
     {#each $level.suns as sun}
