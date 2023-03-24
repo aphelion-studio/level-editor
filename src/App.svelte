@@ -28,6 +28,41 @@
       <h2>Suns</h2>
       <ListSelect listElements={level.suns} listType="Sun" bind:selectedType bind:selectedIndex />
     </div>
+    <div id="editor">
+      {#if selectedType === 'Sun'}
+        <h2>Sun {selectedIndex}</h2>
+        <div class="editor-horizontal">
+          <div class="editor-attribute">
+            <label for="sun-x">X:</label>
+            <input
+              id="sun-x"
+              type="number"
+              bind:value={level.suns[selectedIndex].x}
+              on:blur={() => (level.suns[selectedIndex].x ??= 0)}
+            />
+          </div>
+          <div class="editor-attribute">
+            <label for="sun-y">Y:</label>
+            <input
+              id="sun-y"
+              type="number"
+              bind:value={level.suns[selectedIndex].y}
+              on:blur={() => (level.suns[selectedIndex].y ??= 0)}
+            />
+          </div>
+        </div>
+        <div class="editor-attribute">
+          <label for="sun-radius">Radius:</label>
+          <input
+            id="sun-radius"
+            type="number"
+            min="0"
+            bind:value={level.suns[selectedIndex].radius}
+            on:blur={() => (level.suns[selectedIndex].radius ??= 0)}
+          />
+        </div>
+      {/if}
+    </div>
   </div>
   <svg {viewBox} bind:this={svg}>
     {#each level.planets as planet}
@@ -56,7 +91,7 @@
       />
     {/each}
     {#each level.suns as sun}
-      <circle cx={sun.x} cy={sun.y} r={sun.radius} fill="yellow" />
+      <circle cx={sun.x} cy={-sun.y} r={sun.radius} fill="yellow" />
     {/each}
   </svg>
 </main>
@@ -73,10 +108,7 @@
     background: #141414;
   }
   h1 {
-    margin: 1rem;
-  }
-  h2 {
-    margin: 0.5rem 0 0;
+    padding: 1rem;
   }
   #left {
     display: flex;
@@ -89,5 +121,27 @@
     gap: 1rem;
     overflow-y: auto;
     padding: 0rem 1rem 1rem;
+  }
+  #entity-select h2 {
+    margin: 0.5rem 0 0;
+  }
+  #editor {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  input {
+    width: 0;
+    flex-grow: 1;
+  }
+  .editor-attribute {
+    display: flex;
+    width: 100%;
+    gap: 0.5rem;
+  }
+  .editor-horizontal {
+    display: flex;
+    gap: 1rem;
   }
 </style>
