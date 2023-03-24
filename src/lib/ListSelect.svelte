@@ -14,7 +14,8 @@
         selectedIndex = index
       }}
     >
-      {listType} {index}
+      {listType}
+      {index}
     </button>
   {/each}
 </div>

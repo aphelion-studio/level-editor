@@ -1,5 +1,6 @@
 <script lang="ts">
   import ListSelect from './lib/ListSelect.svelte'
+  import PlanetEditor from './lib/PlanetEditor.svelte'
   import SunEditor from './lib/SunEditor.svelte'
   import { level } from './stores'
   import type { Selection } from './types'
@@ -28,7 +29,9 @@
       <ListSelect listElements={$level.suns} listType="Sun" bind:selectedType bind:selectedIndex />
     </div>
     <div id="editor">
-      {#if selectedType === 'Sun'}
+      {#if selectedType === 'Planet'}
+        <PlanetEditor index={selectedIndex} />
+      {:else if selectedType === 'Sun'}
         <SunEditor index={selectedIndex} />
       {/if}
     </div>
