@@ -1,9 +1,8 @@
 <script lang="ts">
   import ListSelect from './lib/ListSelect.svelte'
-  import sample from './sample.json'
-  import type { Level, Selection } from './types'
-
-  let level = sample as Level
+  import SunEditor from './lib/SunEditor.svelte'
+  import { level } from './stores'
+  import type { Selection } from './types'
 
   let selectedType: Selection = null
   let selectedIndex: number = 0
@@ -20,52 +19,22 @@
     <div id="entity-select">
       <h2>Planets</h2>
       <ListSelect
-        listElements={level.planets}
+        listElements={$level.planets}
         listType="Planet"
         bind:selectedType
         bind:selectedIndex
       />
       <h2>Suns</h2>
-      <ListSelect listElements={level.suns} listType="Sun" bind:selectedType bind:selectedIndex />
+      <ListSelect listElements={$level.suns} listType="Sun" bind:selectedType bind:selectedIndex />
     </div>
     <div id="editor">
       {#if selectedType === 'Sun'}
-        <h2>Sun {selectedIndex}</h2>
-        <div class="editor-horizontal">
-          <div class="editor-attribute">
-            <label for="sun-x">X:</label>
-            <input
-              id="sun-x"
-              type="number"
-              bind:value={level.suns[selectedIndex].x}
-              on:blur={() => (level.suns[selectedIndex].x ??= 0)}
-            />
-          </div>
-          <div class="editor-attribute">
-            <label for="sun-y">Y:</label>
-            <input
-              id="sun-y"
-              type="number"
-              bind:value={level.suns[selectedIndex].y}
-              on:blur={() => (level.suns[selectedIndex].y ??= 0)}
-            />
-          </div>
-        </div>
-        <div class="editor-attribute">
-          <label for="sun-radius">Radius:</label>
-          <input
-            id="sun-radius"
-            type="number"
-            min="0"
-            bind:value={level.suns[selectedIndex].radius}
-            on:blur={() => (level.suns[selectedIndex].radius ??= 0)}
-          />
-        </div>
+        <SunEditor index={selectedIndex} />
       {/if}
     </div>
   </div>
   <svg {viewBox} bind:this={svg}>
-    {#each level.planets as planet}
+    {#each $level.planets as planet}
       <path
         d="M {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}
            C {planet.orbit.x - planet.orbit.a} {-planet.orbit.y - planet.orbit.b * 0.6},
@@ -81,7 +50,7 @@
         fill="transparent"
       />
     {/each}
-    {#each level.planets as planet}
+    {#each $level.planets as planet}
       <!-- TODO: Add support for _t_ -->
       <circle
         cx={planet.orbit.x - planet.orbit.a}
@@ -90,7 +59,7 @@
         fill="red"
       />
     {/each}
-    {#each level.suns as sun}
+    {#each $level.suns as sun}
       <circle cx={sun.x} cy={-sun.y} r={sun.radius} fill="yellow" />
     {/each}
   </svg>
@@ -124,24 +93,5 @@
   }
   #entity-select h2 {
     margin: 0.5rem 0 0;
-  }
-  #editor {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-  input {
-    width: 0;
-    flex-grow: 1;
-  }
-  .editor-attribute {
-    display: flex;
-    width: 100%;
-    gap: 0.5rem;
-  }
-  .editor-horizontal {
-    display: flex;
-    gap: 1rem;
   }
 </style>
