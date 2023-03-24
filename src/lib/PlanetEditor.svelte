@@ -76,7 +76,7 @@
     />
   </div>
   <div class="control">
-    <label for="orbit-a">Orbit Radius B:</label>
+    <label for="orbit-b">Orbit Radius B:</label>
     <input
       id="orbit-b"
       type="number"

@@ -3,7 +3,7 @@
   import PlanetEditor from './lib/PlanetEditor.svelte'
   import SunEditor from './lib/SunEditor.svelte'
   import { level } from './stores'
-  import type { Selection } from './types'
+  import type { Planet, Selection, Sun } from './types'
 
   let selectedType: Selection = null
   let selectedIndex: number = 0
@@ -12,6 +12,28 @@
   $: viewBox = svg
     ? `${-svg.clientWidth / 2} ${-svg.clientHeight / 2} ${svg.clientWidth} ${svg.clientHeight}`
     : '0 0 100 100'
+
+  const templatePlanet = (): Planet => ({
+    owner: -1,
+    radius: 20,
+    moons: 0,
+    spawndelay: 0.5,
+    orbit: {
+      x: 0,
+      y: 0,
+      a: 100,
+      b: 100,
+      speed: 0.1,
+      direction: 'clockwise',
+      t: 0,
+    },
+  })
+
+  const templateSun = (): Sun => ({
+    x: 0,
+    y: 0,
+    radius: 70,
+  })
 
   const playerColor = (player: number) => {
     switch (player) {
@@ -28,24 +50,60 @@
 <main>
   <div id="left">
     <h1>Level Editor</h1>
-    <div id="entity-select">
-      <h2>Planets</h2>
+    <section id="entity-select">
+      <div class="entity-header">
+        <h2>Planets</h2>
+        <div class="entity-controls">
+          <button
+            disabled={selectedType !== 'Planet'}
+            on:click={() => {
+              $level.planets = $level.planets.filter((_, i) => i !== selectedIndex)
+              selectedType = null
+            }}>Delete</button
+          >
+          <button
+            on:click={() => {
+              $level.planets = [...$level.planets, templatePlanet()]
+              selectedType = 'Planet'
+              selectedIndex = $level.planets.length - 1
+            }}>New</button
+          >
+        </div>
+      </div>
       <ListSelect
         listElements={$level.planets}
         listType="Planet"
         bind:selectedType
         bind:selectedIndex
       />
-      <h2>Suns</h2>
+      <div class="entity-header">
+        <h2>Suns</h2>
+        <div class="entity-controls">
+          <button
+            disabled={selectedType !== 'Sun'}
+            on:click={() => {
+              $level.suns = $level.suns.filter((_, i) => i !== selectedIndex)
+              selectedType = null
+            }}>Delete</button
+          >
+          <button
+            on:click={() => {
+              $level.suns = [...$level.suns, templateSun()]
+              selectedType = 'Sun'
+              selectedIndex = $level.suns.length - 1
+            }}>New</button
+          >
+        </div>
+      </div>
       <ListSelect listElements={$level.suns} listType="Sun" bind:selectedType bind:selectedIndex />
-    </div>
-    <div id="editor">
+    </section>
+    <section id="editor">
       {#if selectedType === 'Planet'}
         <PlanetEditor index={selectedIndex} />
       {:else if selectedType === 'Sun'}
         <SunEditor index={selectedIndex} />
       {/if}
-    </div>
+    </section>
   </div>
   <svg {viewBox} bind:this={svg}>
     {#each $level.planets as planet}
@@ -92,11 +150,12 @@
   }
   h1 {
     padding: 1rem;
+    margin: 0;
   }
   #left {
     display: flex;
     flex-direction: column;
-    min-width: 250px;
+    min-width: 300px;
   }
   #entity-select {
     display: flex;
@@ -104,6 +163,13 @@
     gap: 1rem;
     overflow-y: auto;
     padding: 0rem 1rem 1rem;
+  }
+  .entity-header {
+    display: flex;
+    justify-content: space-between;
+  }
+  .entity-controls {
+    display: flex;
   }
   #entity-select h2 {
     margin: 0.5rem 0 0;
