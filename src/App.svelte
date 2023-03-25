@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ExportButton from './lib/ExportButton.svelte'
+  import ImportButton from './lib/ImportButton.svelte'
   import ListSelect from './lib/ListSelect.svelte'
   import PlanetEditor from './lib/PlanetEditor.svelte'
   import SunEditor from './lib/SunEditor.svelte'
@@ -6,7 +8,7 @@
   import type { Planet, Selection, Sun } from './types'
 
   let selectedType: Selection = null
-  let selectedIndex: number = 0
+  let selectedIndex: number = 0 // Only meaningful if selectedType !== null
 
   let svg: SVGSVGElement
   $: viewBox = svg
@@ -50,6 +52,10 @@
 <main>
   <div id="left">
     <h1>Level Editor</h1>
+    <section id="import-export">
+      <ImportButton bind:selectedType />
+      <ExportButton />
+    </section>
     <section id="entity-select">
       <div class="entity-header">
         <h2>Planets</h2>
@@ -157,21 +163,29 @@
     flex-direction: column;
     min-width: 300px;
   }
+  #import-export {
+    display: flex;
+    gap: 1rem;
+    padding: 0 1rem 1rem;
+    margin-bottom: 0.5rem;
+  }
   #entity-select {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     overflow-y: auto;
-    padding: 0rem 1rem 1rem;
+    padding: 0 1rem 1rem;
   }
   .entity-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
   .entity-controls {
     display: flex;
+    gap: 1rem;
   }
   #entity-select h2 {
-    margin: 0.5rem 0 0;
+    margin: 0;
   }
 </style>
