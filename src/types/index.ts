@@ -5,7 +5,7 @@ export type Orbit = {
   b: number
   speed: number
   direction: 'clockwise' | 'counterclockwise'
-  t: number
+  progress: number
 }
 
 export type Planet = {

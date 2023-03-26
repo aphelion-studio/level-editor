@@ -5,7 +5,8 @@
   import PlanetEditor from './lib/PlanetEditor.svelte'
   import SunEditor from './lib/SunEditor.svelte'
   import { level } from './stores'
-  import type { Planet, Selection, Sun } from './types'
+  import type { Selection } from './types'
+  import { cubicBezierX, cubicBezierY, playerColor, templatePlanet, templateSun } from './util'
 
   let selectedType: Selection = null
   let selectedIndex: number = 0 // Only meaningful if selectedType !== null
@@ -14,39 +15,6 @@
   $: viewBox = svg
     ? `${-svg.clientWidth / 2} ${-svg.clientHeight / 2} ${svg.clientWidth} ${svg.clientHeight}`
     : '0 0 100 100'
-
-  const templatePlanet = (): Planet => ({
-    owner: -1,
-    radius: 20,
-    moons: 0,
-    spawndelay: 0.5,
-    orbit: {
-      x: 0,
-      y: 0,
-      a: 100,
-      b: 100,
-      speed: 0.1,
-      direction: 'clockwise',
-      t: 0,
-    },
-  })
-
-  const templateSun = (): Sun => ({
-    x: 0,
-    y: 0,
-    radius: 70,
-  })
-
-  const playerColor = (player: number) => {
-    switch (player) {
-      case 0:
-        return 'blue'
-      case 1:
-        return 'red'
-      default:
-        return 'lime'
-    }
-  }
 </script>
 
 <main>
@@ -129,10 +97,9 @@
       />
     {/each}
     {#each $level.planets as planet}
-      <!-- TODO: Add support for _t_ -->
       <circle
-        cx={planet.orbit.x - planet.orbit.a}
-        cy={-planet.orbit.y}
+        cx={cubicBezierX(planet.orbit)}
+        cy={-cubicBezierY(planet.orbit)}
         r={planet.radius}
         fill={playerColor(planet.owner)}
       />

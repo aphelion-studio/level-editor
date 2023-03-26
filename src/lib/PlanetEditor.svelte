@@ -96,7 +96,19 @@
       on:blur={() => ($level.planets[index].orbit.speed ??= 0)}
     />
   </div>
-  <!-- TODO: Orbit direction (not implemented in game yet), t, rotation (not impl) -->
+  <div class="control">
+    <label for="orbit-progress">Orbit Start Progress:</label>
+    <input
+      id="orbit-progress"
+      type="number"
+      min="0"
+      max="1"
+      step="0.01"
+      bind:value={$level.planets[index].orbit.progress}
+      on:blur={() => ($level.planets[index].orbit.progress ??= 0)}
+    />
+  </div>
+  <!-- TODO: Orbit direction (not implemented in game yet), rotation (not impl) -->
 </div>
 
 <style>
