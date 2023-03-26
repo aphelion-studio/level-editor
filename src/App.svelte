@@ -104,6 +104,19 @@
         fill={playerColor(planet.owner)}
       />
     {/each}
+    {#each $level.planets as planet}
+      {#each { length: planet.moons } as _, i}
+        <circle
+          cx={cubicBezierX(planet.orbit) +
+            2 * planet.radius * Math.sin((2 * Math.PI * i) / planet.moons)}
+          cy={-cubicBezierY(planet.orbit) -
+            2 * planet.radius * Math.cos((2 * Math.PI * i) / planet.moons)}
+          r={10}
+          stroke={playerColor(planet.owner)}
+          fill="grey"
+        />
+      {/each}
+    {/each}
     {#each $level.suns as sun}
       <circle cx={sun.x} cy={-sun.y} r={sun.radius} fill="yellow" />
     {/each}
