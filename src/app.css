@@ -51,6 +51,7 @@ button:disabled {
   cursor: inherit;
 }
 button:hover:enabled,
+input:hover,
 .button-like:hover {
   border-color: #646cff;
 }
@@ -59,6 +60,16 @@ button:focus-visible,
 .button-like:focus,
 .button-like:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+input,
+select {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 1rem;
+  background-color: #1a1a1a;
+  transition: border-color 0.25s;
+  padding: 0.25em 0.5rem;
 }
 
 @media (prefers-color-scheme: light) {
@@ -70,6 +81,8 @@ button:focus-visible,
     color: #747bff;
   }
   button,
+  input,
+  select,
   .button-like {
     color: #242424;
     background-color: #f5f5f5;

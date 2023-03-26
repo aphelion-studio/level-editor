@@ -141,7 +141,7 @@
   #left {
     display: flex;
     flex-direction: column;
-    min-width: 300px;
+    min-width: 320px;
   }
   #import-export {
     display: flex;

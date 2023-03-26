@@ -115,7 +115,7 @@
   .editor {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     padding: 1rem;
   }
   h2 {
@@ -127,6 +127,7 @@
   }
   .control {
     display: flex;
+    align-items: center;
     width: 100%;
     gap: 0.5rem;
   }
