@@ -1,47 +1,171 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  import ExportButton from './lib/ExportButton.svelte'
+  import ImportButton from './lib/ImportButton.svelte'
+  import ListSelect from './lib/ListSelect.svelte'
+  import PlanetEditor from './lib/PlanetEditor.svelte'
+  import SunEditor from './lib/SunEditor.svelte'
+  import { level } from './stores'
+  import type { Selection } from './types'
+  import { cubicBezierX, cubicBezierY, playerColor, templatePlanet, templateSun } from './util'
+
+  let selectedType: Selection = null
+  let selectedIndex: number = 0 // Only meaningful if selectedType !== null
+
+  let svg: SVGSVGElement
+  $: viewBox = svg
+    ? `${-svg.clientWidth / 2} ${-svg.clientHeight / 2} ${svg.clientWidth} ${svg.clientHeight}`
+    : '0 0 100 100'
 </script>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+  <div id="left">
+    <h1>Level Editor</h1>
+    <section id="import-export">
+      <ImportButton bind:selectedType />
+      <ExportButton />
+    </section>
+    <section id="entity-select">
+      <div class="entity-header">
+        <h2>Planets</h2>
+        <div class="entity-controls">
+          <button
+            disabled={selectedType !== 'Planet'}
+            on:click={() => {
+              $level.planets = $level.planets.filter((_, i) => i !== selectedIndex)
+              selectedType = null
+            }}>Delete</button
+          >
+          <button
+            on:click={() => {
+              $level.planets = [...$level.planets, templatePlanet()]
+              selectedType = 'Planet'
+              selectedIndex = $level.planets.length - 1
+            }}>New</button
+          >
+        </div>
+      </div>
+      <ListSelect
+        listElements={$level.planets}
+        listType="Planet"
+        bind:selectedType
+        bind:selectedIndex
+      />
+      <div class="entity-header">
+        <h2>Suns</h2>
+        <div class="entity-controls">
+          <button
+            disabled={selectedType !== 'Sun'}
+            on:click={() => {
+              $level.suns = $level.suns.filter((_, i) => i !== selectedIndex)
+              selectedType = null
+            }}>Delete</button
+          >
+          <button
+            on:click={() => {
+              $level.suns = [...$level.suns, templateSun()]
+              selectedType = 'Sun'
+              selectedIndex = $level.suns.length - 1
+            }}>New</button
+          >
+        </div>
+      </div>
+      <ListSelect listElements={$level.suns} listType="Sun" bind:selectedType bind:selectedIndex />
+    </section>
+    <section id="editor">
+      {#if selectedType === 'Planet'}
+        <PlanetEditor index={selectedIndex} />
+      {:else if selectedType === 'Sun'}
+        <SunEditor index={selectedIndex} />
+      {/if}
+    </section>
   </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer"
-      >SvelteKit</a
-    >, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">Click on the Vite and Svelte logos to learn more</p>
+  <svg {viewBox} bind:this={svg}>
+    {#each $level.planets as planet}
+      <path
+        d="M {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}
+           C {planet.orbit.x - planet.orbit.a} {-planet.orbit.y - planet.orbit.b * 0.6},
+             {planet.orbit.x - planet.orbit.a * 0.6} {-planet.orbit.y - planet.orbit.b},
+             {planet.orbit.x} {-planet.orbit.y - planet.orbit.b}
+           S {planet.orbit.x + planet.orbit.a} {-planet.orbit.y - planet.orbit.b * 0.6}
+             {planet.orbit.x + planet.orbit.a} {-planet.orbit.y}
+           S {planet.orbit.x + planet.orbit.a * 0.6} {-planet.orbit.y + planet.orbit.b}
+             {planet.orbit.x} {-planet.orbit.y + planet.orbit.b}
+           S {planet.orbit.x - planet.orbit.a} {-planet.orbit.y + planet.orbit.b * 0.6}
+             {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}"
+        stroke="white"
+        fill="transparent"
+      />
+    {/each}
+    {#each $level.planets as planet}
+      <circle
+        cx={cubicBezierX(planet.orbit)}
+        cy={-cubicBezierY(planet.orbit)}
+        r={planet.radius}
+        fill={playerColor(planet.owner)}
+      />
+    {/each}
+    {#each $level.planets as planet}
+      {#each { length: planet.moons } as _, i}
+        <circle
+          cx={cubicBezierX(planet.orbit) +
+            2 * planet.radius * Math.sin((2 * Math.PI * i) / planet.moons)}
+          cy={-cubicBezierY(planet.orbit) -
+            2 * planet.radius * Math.cos((2 * Math.PI * i) / planet.moons)}
+          r={10}
+          stroke={playerColor(planet.owner)}
+          fill="grey"
+        />
+      {/each}
+    {/each}
+    {#each $level.suns as sun}
+      <circle cx={sun.x} cy={-sun.y} r={sun.radius} fill="yellow" />
+    {/each}
+  </svg>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  main {
+    height: 100%;
+    width: 100%;
+    display: flex;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+  svg {
+    width: 100%;
+    height: 100%;
+    background: #141414;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+  h1 {
+    padding: 1rem;
+    margin: 0;
   }
-  .read-the-docs {
-    color: #888;
+  #left {
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+  }
+  #import-export {
+    display: flex;
+    gap: 1rem;
+    padding: 0 1rem 1rem;
+    margin-bottom: 0.5rem;
+  }
+  #entity-select {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    padding: 0 1rem 1rem;
+  }
+  .entity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .entity-controls {
+    display: flex;
+    gap: 1rem;
+  }
+  #entity-select h2 {
+    margin: 0;
   }
 </style>
