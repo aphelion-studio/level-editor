@@ -128,9 +128,13 @@
         {#each { length: planet.moons } as _, i}
           <circle
             cx={cubicBezierX(planet.orbit, elapsedTime) +
-              2 * planet.radius * Math.sin((2 * Math.PI * i) / planet.moons)}
+              2 *
+                planet.radius *
+                Math.sin((2 * Math.PI * i) / planet.moons - elapsedTime * 60 * 0.009)}
             cy={-cubicBezierY(planet.orbit, elapsedTime) -
-              2 * planet.radius * Math.cos((2 * Math.PI * i) / planet.moons)}
+              2 *
+                planet.radius *
+                Math.cos((2 * Math.PI * i) / planet.moons - elapsedTime * 60 * 0.009)}
             r={10}
             stroke={playerColor(planet.owner)}
             fill="grey"
