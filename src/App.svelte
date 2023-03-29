@@ -15,6 +15,25 @@
   $: viewBox = svg
     ? `${-svg.clientWidth / 2} ${-svg.clientHeight / 2} ${svg.clientWidth} ${svg.clientHeight}`
     : '0 0 100 100'
+
+  let intervalId: number | null = null
+  let prevIntervalMillis: number = 0
+  let elapsedTime: number = 0
+
+  const playAnimation = () => {
+    prevIntervalMillis = Date.now()
+    intervalId = setInterval(() => {
+      elapsedTime += (Date.now() - prevIntervalMillis) / 1000
+      prevIntervalMillis = Date.now()
+    }, 10)
+  }
+
+  const pauseAnimation = () => {
+    if (intervalId) {
+      clearInterval(intervalId)
+      intervalId = null
+    }
+  }
 </script>
 
 <main>
@@ -79,48 +98,59 @@
       {/if}
     </section>
   </div>
-  <svg {viewBox} bind:this={svg}>
-    {#each $level.planets as planet}
-      <path
-        d="M {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}
-           C {planet.orbit.x - planet.orbit.a} {-planet.orbit.y - planet.orbit.b * 0.6},
-             {planet.orbit.x - planet.orbit.a * 0.6} {-planet.orbit.y - planet.orbit.b},
-             {planet.orbit.x} {-planet.orbit.y - planet.orbit.b}
-           S {planet.orbit.x + planet.orbit.a} {-planet.orbit.y - planet.orbit.b * 0.6}
-             {planet.orbit.x + planet.orbit.a} {-planet.orbit.y}
-           S {planet.orbit.x + planet.orbit.a * 0.6} {-planet.orbit.y + planet.orbit.b}
-             {planet.orbit.x} {-planet.orbit.y + planet.orbit.b}
-           S {planet.orbit.x - planet.orbit.a} {-planet.orbit.y + planet.orbit.b * 0.6}
-             {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}"
-        stroke="white"
-        fill="transparent"
-      />
-    {/each}
-    {#each $level.planets as planet}
-      <circle
-        cx={cubicBezierX(planet.orbit)}
-        cy={-cubicBezierY(planet.orbit)}
-        r={planet.radius}
-        fill={playerColor(planet.owner)}
-      />
-    {/each}
-    {#each $level.planets as planet}
-      {#each { length: planet.moons } as _, i}
-        <circle
-          cx={cubicBezierX(planet.orbit) +
-            2 * planet.radius * Math.sin((2 * Math.PI * i) / planet.moons)}
-          cy={-cubicBezierY(planet.orbit) -
-            2 * planet.radius * Math.cos((2 * Math.PI * i) / planet.moons)}
-          r={10}
-          stroke={playerColor(planet.owner)}
-          fill="grey"
+  <div id="preview">
+    <svg {viewBox} bind:this={svg}>
+      {#each $level.planets as planet}
+        <path
+          d="M {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}
+             C {planet.orbit.x - planet.orbit.a} {-planet.orbit.y - planet.orbit.b * 0.6},
+               {planet.orbit.x - planet.orbit.a * 0.6} {-planet.orbit.y - planet.orbit.b},
+               {planet.orbit.x} {-planet.orbit.y - planet.orbit.b}
+             S {planet.orbit.x + planet.orbit.a} {-planet.orbit.y - planet.orbit.b * 0.6}
+               {planet.orbit.x + planet.orbit.a} {-planet.orbit.y}
+             S {planet.orbit.x + planet.orbit.a * 0.6} {-planet.orbit.y + planet.orbit.b}
+               {planet.orbit.x} {-planet.orbit.y + planet.orbit.b}
+             S {planet.orbit.x - planet.orbit.a} {-planet.orbit.y + planet.orbit.b * 0.6}
+               {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}"
+          stroke="white"
+          fill="transparent"
         />
       {/each}
-    {/each}
-    {#each $level.suns as sun}
-      <circle cx={sun.x} cy={-sun.y} r={sun.radius} fill="yellow" />
-    {/each}
-  </svg>
+      {#each $level.planets as planet}
+        <circle
+          cx={cubicBezierX(planet.orbit, elapsedTime)}
+          cy={-cubicBezierY(planet.orbit, elapsedTime)}
+          r={planet.radius}
+          fill={playerColor(planet.owner)}
+        />
+      {/each}
+      {#each $level.planets as planet}
+        {#each { length: planet.moons } as _, i}
+          <circle
+            cx={cubicBezierX(planet.orbit, elapsedTime) +
+              2 * planet.radius * Math.sin((2 * Math.PI * i) / planet.moons)}
+            cy={-cubicBezierY(planet.orbit, elapsedTime) -
+              2 * planet.radius * Math.cos((2 * Math.PI * i) / planet.moons)}
+            r={10}
+            stroke={playerColor(planet.owner)}
+            fill="grey"
+          />
+        {/each}
+      {/each}
+      {#each $level.suns as sun}
+        <circle cx={sun.x} cy={-sun.y} r={sun.radius} fill="yellow" />
+      {/each}
+    </svg>
+    <div>
+      <button disabled={elapsedTime === 0} on:click={() => (elapsedTime = 0)}>Reset</button>
+      {#if intervalId === null}
+        <button on:click={playAnimation}>Play</button>
+      {:else}
+        <button on:click={pauseAnimation}>Pause</button>
+      {/if}
+      <p>{elapsedTime.toFixed(2)}</p>
+    </div>
+  </div>
 </main>
 
 <style>
@@ -128,6 +158,25 @@
     height: 100%;
     width: 100%;
     display: flex;
+  }
+  #preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+  }
+  #preview div {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  #preview div p {
+    color: #ffffff;
+    font-weight: 500;
+    margin: 0;
   }
   svg {
     width: 100%;
@@ -145,7 +194,7 @@
   }
   #import-export {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     padding: 0 1rem 1rem;
     margin-bottom: 0.5rem;
   }
@@ -163,7 +212,7 @@
   }
   .entity-controls {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
   }
   #entity-select h2 {
     margin: 0;

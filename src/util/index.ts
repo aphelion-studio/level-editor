@@ -27,8 +27,8 @@ const extractSegNumT = (progress: number): [segNum: number, t: number] => [
   (progress / 0.25) % 1,
 ]
 
-export const cubicBezierX = (orbit: Orbit) => {
-  const [segNum, t] = extractSegNumT(orbit.progress)
+export const cubicBezierX = (orbit: Orbit, time: number) => {
+  const [segNum, t] = extractSegNumT((orbit.progress + (orbit.speed * time) / 4) % 1)
   const a1x = segNum === 0 ? orbit.x - orbit.a : segNum === 2 ? orbit.x + orbit.a : orbit.x
   const c1x = segNum === 1 ? orbit.x + orbit.a * 0.6 : segNum === 3 ? orbit.x - orbit.a * 0.6 : a1x
   const a2x = segNum === 1 ? orbit.x + orbit.a : segNum === 3 ? orbit.x - orbit.a : orbit.x
@@ -41,8 +41,8 @@ export const cubicBezierX = (orbit: Orbit) => {
   )
 }
 
-export const cubicBezierY = (orbit: Orbit) => {
-  const [segNum, t] = extractSegNumT(orbit.progress)
+export const cubicBezierY = (orbit: Orbit, time: number) => {
+  const [segNum, t] = extractSegNumT((orbit.progress + (orbit.speed * time) / 4) % 1)
   const a1y = segNum === 1 ? orbit.y + orbit.b : segNum === 3 ? orbit.y - orbit.b : orbit.y
   const c1y = segNum === 0 ? orbit.y + orbit.b * 0.6 : segNum === 2 ? orbit.y - orbit.b * 0.6 : a1y
   const a2y = segNum === 0 ? orbit.y + orbit.b : segNum === 2 ? orbit.y - orbit.b : orbit.y
