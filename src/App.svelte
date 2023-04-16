@@ -11,10 +11,25 @@
   let selectedType: Selection = null
   let selectedIndex: number = 0 // Only meaningful if selectedType !== null
 
-  let svg: SVGSVGElement
-  $: viewBox = svg
-    ? `${-svg.clientWidth / 2} ${-svg.clientHeight / 2} ${svg.clientWidth} ${svg.clientHeight}`
-    : '0 0 100 100'
+  let previewWidth: number
+  let previewHeight: number
+  let panX: number = 0
+  let panY: number = 0
+  $: viewBox = `
+    ${-previewWidth / 2 + panX}
+    ${-previewHeight / 2 + panY}
+    ${previewWidth}
+    ${previewHeight}`
+
+  let panning: boolean = false
+  const startPan = () => (panning = true)
+  const endPan = () => (panning = false)
+  const movePan = (e: MouseEvent) => {
+    if (panning) {
+      panX -= e.movementX
+      panY -= e.movementY
+    }
+  }
 
   let intervalId: number | null = null
   let prevIntervalMillis: number = 0
@@ -98,8 +113,8 @@
       {/if}
     </section>
   </div>
-  <div id="preview">
-    <svg {viewBox} bind:this={svg}>
+  <div id="preview" bind:clientWidth={previewWidth} bind:clientHeight={previewHeight}>
+    <svg {viewBox} on:mousedown={startPan} on:mouseup={endPan} on:mousemove={movePan}>
       {#each $level.planets as planet}
         <path
           d="M {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}
