@@ -11,10 +11,35 @@
   let selectedType: Selection = null
   let selectedIndex: number = 0 // Only meaningful if selectedType !== null
 
-  let svg: SVGSVGElement
-  $: viewBox = svg
-    ? `${-svg.clientWidth / 2} ${-svg.clientHeight / 2} ${svg.clientWidth} ${svg.clientHeight}`
-    : '0 0 100 100'
+  let previewWidth: number
+  let previewHeight: number
+  let panX: number = 0
+  let panY: number = 0
+  let zoom: number = 1
+  $: offsetX = (-previewWidth / 2) * zoom + panX
+  $: offsetY = (-previewHeight / 2) * zoom + panY
+  $: viewBox = `
+    ${offsetX}
+    ${offsetY}
+    ${previewWidth * zoom}
+    ${previewHeight * zoom}`
+
+  let panning: boolean = false
+  const startPan = () => (panning = true)
+  const endPan = () => (panning = false)
+  const movePan = (e: MouseEvent) => {
+    if (panning) {
+      panX -= e.movementX * zoom
+      panY -= e.movementY * zoom
+    }
+  }
+
+  const wheelZoom = (e: WheelEvent) => {
+    zoom += e.deltaY / 1000
+    if (zoom < 0.2) {
+      zoom = 0.2
+    }
+  }
 
   let intervalId: number | null = null
   let prevIntervalMillis: number = 0
@@ -98,8 +123,14 @@
       {/if}
     </section>
   </div>
-  <div id="preview">
-    <svg {viewBox} bind:this={svg}>
+  <div id="preview" bind:clientWidth={previewWidth} bind:clientHeight={previewHeight}>
+    <svg
+      {viewBox}
+      on:mousedown={startPan}
+      on:mouseup={endPan}
+      on:mousemove={movePan}
+      on:wheel={wheelZoom}
+    >
       {#each $level.planets as planet}
         <path
           d="M {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}
