@@ -15,19 +15,29 @@
   let previewHeight: number
   let panX: number = 0
   let panY: number = 0
+  let zoom: number = 1
+  $: offsetX = (-previewWidth / 2) * zoom + panX
+  $: offsetY = (-previewHeight / 2) * zoom + panY
   $: viewBox = `
-    ${-previewWidth / 2 + panX}
-    ${-previewHeight / 2 + panY}
-    ${previewWidth}
-    ${previewHeight}`
+    ${offsetX}
+    ${offsetY}
+    ${previewWidth * zoom}
+    ${previewHeight * zoom}`
 
   let panning: boolean = false
   const startPan = () => (panning = true)
   const endPan = () => (panning = false)
   const movePan = (e: MouseEvent) => {
     if (panning) {
-      panX -= e.movementX
-      panY -= e.movementY
+      panX -= e.movementX * zoom
+      panY -= e.movementY * zoom
+    }
+  }
+
+  const wheelZoom = (e: WheelEvent) => {
+    zoom += e.deltaY / 1000
+    if (zoom < 0.2) {
+      zoom = 0.2
     }
   }
 
@@ -114,7 +124,13 @@
     </section>
   </div>
   <div id="preview" bind:clientWidth={previewWidth} bind:clientHeight={previewHeight}>
-    <svg {viewBox} on:mousedown={startPan} on:mouseup={endPan} on:mousemove={movePan}>
+    <svg
+      {viewBox}
+      on:mousedown={startPan}
+      on:mouseup={endPan}
+      on:mousemove={movePan}
+      on:wheel={wheelZoom}
+    >
       {#each $level.planets as planet}
         <path
           d="M {planet.orbit.x - planet.orbit.a} {-planet.orbit.y}
