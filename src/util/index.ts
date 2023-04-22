@@ -4,7 +4,7 @@ export const templatePlanet = (): Planet => ({
   owner: -1,
   radius: 20,
   moons: 0,
-  spawndelay: 0.5,
+  spawndelay: 3,
   orbit: {
     x: 0,
     y: 0,
@@ -62,6 +62,6 @@ export const playerColor = (player: number) => {
     case 1:
       return 'red'
     default:
-      return 'lime'
+      return 'lightgray'
   }
 }
