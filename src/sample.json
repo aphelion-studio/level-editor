@@ -4,7 +4,7 @@
       "owner": 1,
       "radius": 40,
       "moons": 3,
-      "spawndelay": 0.5,
+      "spawndelay": 3,
       "orbit": {
         "x": 0,
         "y": 0,
@@ -19,7 +19,7 @@
       "owner": 0,
       "radius": 20,
       "moons": 5,
-      "spawndelay": 0.5,
+      "spawndelay": 3,
       "orbit": {
         "x": 0,
         "y": 0,
@@ -34,7 +34,7 @@
       "owner": -1,
       "radius": 20,
       "moons": 0,
-      "spawndelay": 0.5,
+      "spawndelay": 3,
       "orbit": {
         "x": 200,
         "y": 100,
