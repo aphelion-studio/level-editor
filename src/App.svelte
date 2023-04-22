@@ -25,12 +25,17 @@
     ${previewHeight * zoom}`
 
   let panning: boolean = false
-  const startPan = () => (panning = true)
+  let panned: boolean = false
+  const startPan = () => {
+    panning = true
+    panned = false
+  }
   const endPan = () => (panning = false)
   const movePan = (e: MouseEvent) => {
     if (panning) {
       panX -= e.movementX * zoom
       panY -= e.movementY * zoom
+      panned = true
     }
   }
 
@@ -130,6 +135,9 @@
       on:mouseup={endPan}
       on:mousemove={movePan}
       on:wheel={wheelZoom}
+      on:click={() => {
+        if (!panned) selectedType = null
+      }}
     >
       {#each $level.planets as planet}
         <path
@@ -147,12 +155,21 @@
           fill="transparent"
         />
       {/each}
-      {#each $level.planets as planet}
+      {#each $level.planets as planet, i}
         <circle
+          class:selected={selectedType === 'Planet' && selectedIndex === i}
+          style:--playercolor={playerColor(planet.owner)}
           cx={cubicBezierX(planet.orbit, elapsedTime)}
           cy={-cubicBezierY(planet.orbit, elapsedTime)}
           r={planet.radius}
           fill={playerColor(planet.owner)}
+          on:click={(event) => {
+            if (!panned) {
+              selectedType = 'Planet'
+              selectedIndex = i
+              event.stopPropagation()
+            }
+          }}
         />
       {/each}
       {#each $level.planets as planet}
@@ -172,8 +189,22 @@
           />
         {/each}
       {/each}
-      {#each $level.suns as sun}
-        <circle cx={sun.x} cy={-sun.y} r={sun.radius} fill="yellow" />
+      {#each $level.suns as sun, i}
+        <circle
+          class:selected={selectedType === 'Sun' && selectedIndex === i}
+          style:--playercolor={'yellow'}
+          cx={sun.x}
+          cy={-sun.y}
+          r={sun.radius}
+          fill="yellow"
+          on:click={(event) => {
+            if (!panned) {
+              selectedType = 'Sun'
+              selectedIndex = i
+              event.stopPropagation()
+            }
+          }}
+        />
       {/each}
     </svg>
     <div>
@@ -217,6 +248,9 @@
     width: 100%;
     height: 100%;
     background: #141414;
+  }
+  svg .selected {
+    filter: drop-shadow(0px 0px 24px var(--playercolor));
   }
   h1 {
     padding: 1rem;

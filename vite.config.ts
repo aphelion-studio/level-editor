@@ -4,5 +4,12 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/level-editor/',
-  plugins: [svelte()],
+  plugins: [
+    svelte({
+      onwarn: (warning, handler) => {
+        if (warning.code === 'a11y-click-events-have-key-events') return
+        handler(warning)
+      },
+    }),
+  ],
 })
