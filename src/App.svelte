@@ -2,6 +2,7 @@
   import ExportButton from './lib/ExportButton.svelte'
   import ImportButton from './lib/ImportButton.svelte'
   import ListSelect from './lib/ListSelect.svelte'
+  import MapEditor from './lib/MapEditor.svelte'
   import PlanetEditor from './lib/PlanetEditor.svelte'
   import SunEditor from './lib/SunEditor.svelte'
   import { level } from './stores'
@@ -72,6 +73,9 @@
     <section id="import-export">
       <ImportButton bind:selectedType />
       <ExportButton />
+    </section>
+    <section id="map-settings">
+      <MapEditor />
     </section>
     <section id="entity-select">
       <div class="entity-header">
@@ -265,7 +269,9 @@
     display: flex;
     gap: 0.5rem;
     padding: 0 1rem 1rem;
-    margin-bottom: 0.5rem;
+  }
+  #map-settings {
+    padding: 0 1rem 1rem;
   }
   #entity-select {
     display: flex;

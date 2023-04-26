@@ -131,4 +131,7 @@
     width: 100%;
     gap: 0.5rem;
   }
+  select {
+    flex-grow: 1;
+  }
 </style>

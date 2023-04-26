@@ -23,6 +23,7 @@ export type Sun = {
 }
 
 export type Level = {
+  players: number
   planets: Planet[]
   suns: Sun[]
 }
