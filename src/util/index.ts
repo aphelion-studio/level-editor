@@ -1,7 +1,7 @@
 import type { Orbit, Planet, Sun } from '../types'
 
 export const templatePlanet = (): Planet => ({
-  owner: -1,
+  owner: 0,
   radius: 20,
   moons: 0,
   spawndelay: 3,
@@ -10,7 +10,7 @@ export const templatePlanet = (): Planet => ({
     y: 0,
     a: 100,
     b: 100,
-    speed: 0.1,
+    speed: 0.04,
     direction: 'clockwise',
     progress: 0,
   },
@@ -58,10 +58,12 @@ export const cubicBezierY = (orbit: Orbit, time: number) => {
 export const playerColor = (player: number) => {
   switch (player) {
     case 0:
-      return 'blue'
+      return 'lightgray'
     case 1:
+      return 'blue'
+    case 2:
       return 'red'
     default:
-      return 'lightgray'
+      return 'black'
   }
 }
