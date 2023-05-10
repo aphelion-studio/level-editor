@@ -10,9 +10,9 @@
   <div class="control">
     <label for="planet-owner">Owner:</label>
     <select id="planet-owner" bind:value={$level.planets[index].owner}>
-      <option value={-1}>Neutral</option>
-      <option value={0}>Player 0</option>
+      <option value={0}>Neutral</option>
       <option value={1}>Player 1</option>
+      <option value={2}>Player 2</option>
     </select>
   </div>
   <div class="control">
