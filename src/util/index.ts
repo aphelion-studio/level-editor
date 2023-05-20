@@ -28,7 +28,7 @@ const extractSegNumT = (progress: number): [segNum: number, t: number] => [
 ]
 
 export const cubicBezierX = (orbit: Orbit, time: number) => {
-  const [segNum, t] = extractSegNumT((orbit.progress + (orbit.speed * time) / 4) % 1)
+  const [segNum, t] = extractSegNumT((((orbit.progress + (orbit.speed * time) / 4) % 1) + 1) % 1)
   const a1x = segNum === 0 ? orbit.x - orbit.a : segNum === 2 ? orbit.x + orbit.a : orbit.x
   const c1x = segNum === 1 ? orbit.x + orbit.a * 0.6 : segNum === 3 ? orbit.x - orbit.a * 0.6 : a1x
   const a2x = segNum === 1 ? orbit.x + orbit.a : segNum === 3 ? orbit.x - orbit.a : orbit.x
@@ -42,7 +42,7 @@ export const cubicBezierX = (orbit: Orbit, time: number) => {
 }
 
 export const cubicBezierY = (orbit: Orbit, time: number) => {
-  const [segNum, t] = extractSegNumT((orbit.progress + (orbit.speed * time) / 4) % 1)
+  const [segNum, t] = extractSegNumT((((orbit.progress + (orbit.speed * time) / 4) % 1) + 1) % 1)
   const a1y = segNum === 1 ? orbit.y + orbit.b : segNum === 3 ? orbit.y - orbit.b : orbit.y
   const c1y = segNum === 0 ? orbit.y + orbit.b * 0.6 : segNum === 2 ? orbit.y - orbit.b * 0.6 : a1y
   const a2y = segNum === 0 ? orbit.y + orbit.b : segNum === 2 ? orbit.y - orbit.b : orbit.y
@@ -60,9 +60,17 @@ export const playerColor = (player: number) => {
     case 0:
       return 'lightgray'
     case 1:
-      return 'blue'
+      // return '#95C5F4' // Figma color style
+      return '#81C0FF' // Figma unit asset color
     case 2:
-      return 'red'
+      // return '#FF3C5F' // Figma color style
+      return '#F96D6D' // Figma unit asset color
+    case 3:
+      // return '#FFD966' // Figma color style
+      return '#FFD966' // Figma unit asset color
+    case 4:
+      // return '#B5F4C7' // Figma color style
+      return '#B5F4C7' // Figma unit asset color
     default:
       return 'black'
   }
