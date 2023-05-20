@@ -13,6 +13,8 @@
       <option value={0}>Neutral</option>
       <option value={1}>Player 1</option>
       <option value={2}>Player 2</option>
+      <option value={3}>Player 3</option>
+      <option value={4}>Player 4</option>
     </select>
   </div>
   <div class="control">
@@ -90,7 +92,6 @@
     <input
       id="orbit-speed"
       type="number"
-      min="0"
       step="0.01"
       bind:value={$level.planets[index].orbit.speed}
       on:blur={() => ($level.planets[index].orbit.speed ??= 0)}
@@ -108,7 +109,7 @@
       on:blur={() => ($level.planets[index].orbit.progress ??= 0)}
     />
   </div>
-  <!-- TODO: Orbit direction (not implemented in game yet), rotation (not impl) -->
+  <!-- TODO: Orbit rotation (not impl) -->
 </div>
 
 <style>

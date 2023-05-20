@@ -192,11 +192,11 @@
       {#each $level.suns as sun, i}
         <circle
           class:selected={selectedType === 'Sun' && selectedIndex === i}
-          style:--playercolor={'yellow'}
+          style:--playercolor={'#FFFFA4'}
           cx={sun.x}
           cy={-sun.y}
           r={sun.radius}
-          fill="yellow"
+          fill="#FFFFA4"
           on:click={(event) => {
             if (!panned) {
               selectedType = 'Sun'
